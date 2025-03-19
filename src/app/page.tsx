@@ -3,8 +3,13 @@ import Brands from "@/components/homepage/Brands";
 import DressStyle from "@/components/homepage/DressStyle";
 import Header from "@/components/homepage/Header";
 import Reviews from "@/components/homepage/Reviews";
+import TopBanner from "@/components/layout/Banner/TopBanner";
+import Footer from "@/components/layout/Footer";
+import TopNavbar from "@/components/layout/Navbar/TopNavbar";
 import { Product } from "@/types/product.types";
 import { Review } from "@/types/review.types";
+import HolyLoader from "holy-loader";
+import Providers from "./providers";
 
 export const newArrivalsData: Product[] = [
   {
@@ -208,29 +213,35 @@ export const reviewsData: Review[] = [
 export default function Home() {
   return (
     <>
-      <Header />
-      <Brands />
-      <main className="my-[50px] sm:my-[72px]">
-        <ProductListSec
-          title="NEW ARRIVALS"
-          data={newArrivalsData}
-          viewAllLink="/shop#new-arrivals"
-        />
-        <div className="max-w-frame mx-auto px-4 xl:px-0">
-          <hr className="h-[1px] border-t-black/10 my-10 sm:my-16" />
-        </div>
-        <div className="mb-[50px] sm:mb-20">
+      <HolyLoader color="#868686" />
+      <TopBanner />
+      <Providers>
+        <TopNavbar />
+        <Header />
+        <Brands />
+        <main className="my-[50px] sm:my-[72px]">
           <ProductListSec
-            title="top selling"
-            data={topSellingData}
-            viewAllLink="/shop#top-selling"
+            title="NEW ARRIVALS"
+            data={newArrivalsData}
+            viewAllLink="/shop#new-arrivals"
           />
-        </div>
-        <div className="mb-[50px] sm:mb-20">
-          <DressStyle />
-        </div>
-        <Reviews data={reviewsData} />
-      </main>
+          <div className="max-w-frame mx-auto px-4 xl:px-0">
+            <hr className="h-[1px] border-t-black/10 my-10 sm:my-16" />
+          </div>
+          <div className="mb-[50px] sm:mb-20">
+            <ProductListSec
+              title="top selling"
+              data={topSellingData}
+              viewAllLink="/shop#top-selling"
+            />
+          </div>
+          <div className="mb-[50px] sm:mb-20">
+            <DressStyle />
+          </div>
+          <Reviews data={reviewsData} />
+        </main>
+      </Providers>
+      <Footer />
     </>
   );
 }

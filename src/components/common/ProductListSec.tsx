@@ -1,15 +1,14 @@
-import React from "react";
-import * as motion from "framer-motion/client";
-import { cn } from "@/lib/utils";
-import { integralCF } from "@/styles/fonts";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
-import ProductCard from "./ProductCard";
+import { cn } from "@/lib/utils";
+import { integralCF } from "@/styles/fonts";
 import { Product } from "@/types/product.types";
+import * as motion from "framer-motion/client";
 import Link from "next/link";
+import ProductCard from "./ProductCard";
 
 type ProductListSecProps = {
   title: string;
@@ -41,6 +40,7 @@ const ProductListSec = ({ title, data, viewAllLink }: ProductListSecProps) => {
         <Carousel
           opts={{
             align: "start",
+            loop: true,
           }}
           className="w-full mb-6 md:mb-9"
         >
