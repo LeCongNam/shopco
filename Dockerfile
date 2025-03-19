@@ -1,29 +1,50 @@
-# Sử dụng hình ảnh Node.js chính thức làm nền tảng
-FROM node:alpine
+# Use Node.js LTS
+FROM node:18-alpine AS base
 
-# Thiết lập thư mục làm việc trong container
+# Install dependencies only when needed
+FROM base AS deps
 WORKDIR /app
 
-# Sao chép tệp package.json và package-lock.json vào thư mục làm việc
-COPY package*.json ./
+# Copy package files
+COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
+RUN \
+  if [ -f yarn.lock ]; then yarn install --frozen-lockfile; \
+  elif [ -f package-lock.json ]; then npm ci; \
+  elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && pnpm i --frozen-lockfile; \
+  else echo "Lockfile not found." && exit 1; \
+  fi
 
-# Cài đặt các phụ thuộc
-RUN npm i yarn 
-
-# Cài đặt các phụ thuộc
-RUN yarn install
-
-# Sao chép toàn bộ mã nguồn vào thư mục làm việc
+# Rebuild the source code only when needed
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Biến môi trường để chỉ định chế độ sản xuất
-ENV NODE_ENV=production
+# Disable Next.js telemetry during build
+ENV NEXT_TELEMETRY_DISABLED 1
 
-# Biên dịch ứng dụng Next.js
 RUN yarn build
 
-# Mở cổng 3000 để truy cập ứng dụng
-EXPOSE 3001
+# Production image, copy all the files and run next
+FROM base AS runner
+WORKDIR /app
 
-# Lệnh khởi chạy ứng dụng
-CMD ["npm", "start"]
+ENV NODE_ENV production
+ENV NEXT_TELEMETRY_DISABLED 1
+
+# Create a non-root user
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+# Copy built files
+COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+USER nextjs
+
+EXPOSE 3000
+
+ENV PORT 3000
+
+CMD ["node", "server.js"]
