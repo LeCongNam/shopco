@@ -23,4 +23,4 @@ jobs:
         with:
           context:
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/ ${{ secrets.DOCKERHUB_REPOSITORY }}:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }}:latest
