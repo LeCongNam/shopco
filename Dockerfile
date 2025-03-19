@@ -20,7 +20,7 @@ COPY . .
 ENV NODE_ENV=production
 
 # Biên dịch ứng dụng Next.js
-RUN npm run build
+RUN yarn build
 
 # Mở cổng 3000 để truy cập ứng dụng
 EXPOSE 3001
