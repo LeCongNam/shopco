@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Cài đặt các phụ thuộc
-RUN npm i yarn -g
+RUN npm i yarn 
 
 # Cài đặt các phụ thuộc
 RUN yarn install
@@ -23,7 +23,7 @@ ENV NODE_ENV=production
 RUN npm run build
 
 # Mở cổng 3000 để truy cập ứng dụng
-EXPOSE 3000
+EXPOSE 3001
 
 # Lệnh khởi chạy ứng dụng
 CMD ["npm", "start"]
