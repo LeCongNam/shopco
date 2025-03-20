@@ -1,0 +1,10 @@
+pipeline:
+  install_dependencies:
+    image: node:20
+    commands:
+      - yarn install
+
+  build:
+    image: node:20
+    commands:
+      - yarn build
