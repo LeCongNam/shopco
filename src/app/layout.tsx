@@ -1,6 +1,7 @@
 import { satoshi } from "@/styles/fonts";
 import "@/styles/globals.css";
 import type { Metadata, Viewport } from "next";
+import Providers from "./providers";
 
 export const metadata: Metadata = {
   title: "Shopco",
@@ -18,7 +19,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={satoshi.className}>{children}</body>
+      <body className={satoshi.className}>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }
