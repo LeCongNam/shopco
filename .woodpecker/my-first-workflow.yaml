@@ -1,10 +1,29 @@
-pipeline:
-  install_dependencies:
-    image: node:20
-    commands:
-      - yarn install
+kind: pipeline
+type: docker
+name: Deploy to Local Server
 
-  build:
-    image: node:20
+steps:
+  - name: pull_image
+    image: docker
     commands:
-      - yarn build
+      - echo "Đăng nhập vào Docker Hub..."
+      - echo "${DOCKER_ACCESS_TOKEN}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
+      - echo "Pull image ${DOCKER_REPO}..."
+      - docker pull "${DOCKER_REPO}"
+
+  - name: restart_container
+    image: docker
+    commands:
+      - echo "Dừng container hiện tại..."
+      - docker stop my_app || true
+      - docker rm my_app || true
+      - echo "Chạy container mới..."
+      - docker run -d --name my_app -p 80:80 "${DOCKER_REPO}"
+
+environment:
+  DOCKER_REPO:
+    from_secret: ${DOCKER_REPO}
+  DOCKER_USERNAME:
+    from_secret: ${DOCKER_USERNAME}
+  DOCKER_ACCESS_TOKEN:
+    from_secret: ${DOCKER_ACCESS_TOKEN}
